@@ -18,10 +18,24 @@ class TestCase extends Laravel\Lumen\Testing\TestCase
         parent::setUp();
         Artisan::call('migrate');
     }
+
     public function tearDown()
     {
         Artisan::call('migrate:reset');
         parent::tearDown();
+    }
+
+    protected function assertObjectEqualsExclude($model, $array, $keys = [])
+    {
+        $attributes = $model->toArray();
+        foreach ($keys as $key)
+        {
+            unset($attributes[$key]);
+        }
+
+        foreach ($attributes as $key => $attribute){
+            $this->assertEquals($model->$key, $array[$key]);
+        }
     }
 
 

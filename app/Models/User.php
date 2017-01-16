@@ -20,7 +20,7 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
      * @var array
      */
     protected $fillable = [
-        'name', 'email',
+        'first_name', 'last_name', 'email', 'is_admin'
     ];
 
     /**
@@ -30,6 +30,12 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
      */
     protected $hidden = [
         'password',
+    ];
+
+    protected $table = 'user';
+
+    protected $casts = [
+        'is_admin' => 'boolean',
     ];
 
     public function getJWTIdentifier()
@@ -45,5 +51,9 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
     public function setPasswordAttribute($pass)
     {
         $this->attributes['password'] = app('hash')->make($pass);
+    }
+
+    public function isAdmin(){
+        return $this->is_admin ==  true;
     }
 }

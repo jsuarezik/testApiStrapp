@@ -2,6 +2,7 @@
 use App\Models\User;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Symfony\Component\HttpFoundation\Response;
+
 class AuthTest extends TestCase
 {
     use DatabaseMigrations;

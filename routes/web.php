@@ -32,10 +32,18 @@ $app->group([
     'namespace' => 'App\Http\Controllers'], function () use ($app) {
 
     $app->get('profile/me', 'ProfileController@me');
-
+    //Users
     $app->get('users','UserController@all');
     $app->get('users/{id}', 'UserController@get');
     $app->post('users','UserController@add');
     $app->patch('users/{id}', 'UserController@patch');
     $app->delete('users/{id}', 'UserController@delete');
+    //Priority
+    $app->get('priorities', 'PriorityController@all');
+    $app->get('priorities/{id}', 'PriorityController@get');
+    $app->post('priorities', 'PriorityController@add');
+    $app->patch('priorities/{id}', 'PriorityController@patch');
+    $app->delete('priorities/{id}', 'PriorityController@delete');
+    //Tasks
+
 });
