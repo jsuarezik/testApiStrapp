@@ -45,7 +45,7 @@ class PriorityControllerTest extends TestCase
         $post = $this->json('POST', '/api/v1/priorities', ['name' => '123']);
         $this->assertResponseStatus(Response::HTTP_UNPROCESSABLE_ENTITY, 'Test if HTTP Unprocessable Entity');//Invalid name
         //Valid Data
-        $post = $this->json('POST', '/api/vi/priorities', ['name' => 'foo']);
+        $post = $this->json('POST', '/api/v1/priorities', ['name' => 'foo']);
         $this->assertResponseStatus(Response::HTTP_CREATED, 'Test if HTTP Created');//Valid data
         $this->seeInDatabase('priority',['name' => 'foo']);
         $response = json_decode($post->response->getContent(),true);
@@ -73,6 +73,7 @@ class PriorityControllerTest extends TestCase
 
     public function testPatchPriority()
     {
+        $this->withoutMiddleware();
         //Priority not found
         $this->be(factory(User::class)->create());
         $patch = $this->json('PATCH', '/api/v1/priority/1',[]);
@@ -88,6 +89,7 @@ class PriorityControllerTest extends TestCase
 
     public function testDeletePriority()
     {
+        $this->withoutMiddleware();
         //Priority not found
         $this->be(factory(User::class)->create());
         $delete = $this->json('DELETE', 'api/v1/priorities/1');
