@@ -11,7 +11,8 @@ use Symfony\Component\Console\Input\InputOption;
 class UserGeneratorCommand extends Command
 {
     protected $signature = 'user:generate {email : The account email}
-        {--name= : The user name.}
+        {--first_name= : The user first name.}
+        {--last_name= : The user last name.}
         {--password= : The user password.}
         {--admin : The user should be created as admin.}';
 
@@ -40,10 +41,11 @@ class UserGeneratorCommand extends Command
 
         $this->user->email = $this->argument('email');
 
-        if (!$this->option('name')) {
+        if (!$this->option('first_name')) {
             $this->user->name = $this->user->email;
         } else {
-            $this->user->name = $this->option('name');
+            $this->user->first_name = $this->option('first_name');
+            $this->user->last_name = $this->option('last_name');
         }
 
         $password = $this->option('password');
@@ -60,7 +62,7 @@ class UserGeneratorCommand extends Command
         $this->user->save();
 
         // Report that the user has been saved.
-        $this->info("[{$this->user->id}] {$this->user->name} has been generated and saved.");
+        $this->info("[{$this->user->id}] {$this->user->first_name} {$this->user->last_name} has been generated and saved.");
 
         if (!$this->option('password')) {
             $this->info("Generated password: {$password}");
@@ -77,7 +79,8 @@ class UserGeneratorCommand extends Command
     protected function getOptions()
     {
         return [
-            ['name', null, InputOption::VALUE_OPTIONAL, 'Name of the new user'],
+            ['first_name', null, InputOption::VALUE_OPTIONAL, 'first_name of the new user'],
+            ['last_name', null, InputOption::VALUE_OPTIONAL, 'last_name of the new user'],
             ['password', null, InputOption::VALUE_OPTIONAL, 'Password'],
             ['admin', null, InputOption::VALUE_OPTIONAL, 'Set user as superuser']
         ];
