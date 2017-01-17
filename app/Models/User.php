@@ -68,6 +68,6 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
     * @Relation
     */
     public function assigned_tasks(){
-        return $this->hasMany(Task::class,'assigned_user_id');
+        return $this->hasMany(Task::class,'user_assigned_id');
     }
 }

@@ -14,6 +14,20 @@ class UserController extends Controller
         return response()->json($users,200);
     }
 
+    public function getCreatedTasks(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        return response()->json($user->created_tasks,200);
+    }
+
+    public function getAssignedTasks(Request $request, $id){
+        $user = User::findOrFail($id);
+
+        return response()->json($user->assigned_tasks,200);
+    }
+
+
     public function get(Request $request, $id)
     {
         $user = User::findOrFail($id);

@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Priority;
-use User;
 
 class Task extends Model
 {
@@ -36,7 +34,7 @@ class Task extends Model
     /**
     * @Relation
     */
-    public function assigned_user(){
+    public function user_assigned(){
         return $this->belongsTo(User::class);
     }
 

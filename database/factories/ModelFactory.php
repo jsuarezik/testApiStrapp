@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use App\Models\Priority;
+use App\Models\Task;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,3 +35,13 @@ $factory->define(Priority::class, function (Faker\Generator $faker){
     ];
 });
 
+$factory->define(Task::class, function (Faker\Generator $faker){
+    return [
+        'title' => $faker->word,
+        'description' => $faker->words(3, true),
+        'due_date' => $faker->date(),
+        'priority_id' => factory(Priority::class)->create()->id,
+        'creator_id' => factory(User::class)->create()->id,
+        'user_assigned_id' => factory(User::class)->create()->id
+    ];
+});

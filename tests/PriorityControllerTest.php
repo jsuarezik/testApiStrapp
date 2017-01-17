@@ -27,11 +27,11 @@ class PriorityControllerTest extends TestCase
         $response = json_decode($get->response->getContent(), true);
         $this->assertNotNull($response, 'Test if is a valid json');
         $this->assertTrue(json_last_error() == JSON_ERROR_NONE, 'Test if the response was ok');
-        $this->assertCount(2, $response, 'Test if query count is 3');
+        $this->assertCount(2, $response, 'Test if query count is 2');
 
-        foreach ($priorities as $key => $priority){
-            $this->assertObjectEqualsExclude($priority, $response[$key]);
-        }
+        $priorities->each(function($item, $key) use ($response){
+            $this->assertObjectEqualsExclude($item, $response[$key]);
+        });
     }
 
     public function testPostPriority()
