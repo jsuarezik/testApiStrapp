@@ -58,7 +58,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $rules = [
-            'email' => 'sometimes|email' ,
+            'email' => 'sometimes|email|unique:user,email,'.$user->id ,
             'first_name' => 'alpha|min:2|sometimes',
             'last_name' => 'alpha|min:2|sometimes',
             'password' => 'confirmed:password_confirmation|sometimes',

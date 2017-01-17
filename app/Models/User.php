@@ -56,4 +56,18 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
     public function isAdmin(){
         return $this->is_admin ==  true;
     }
+
+    /**
+    * @Relation
+    */
+    public function created_tasks(){
+        return $this->hasMany(Task::class,'creator_id');
+    }
+
+    /**
+    * @Relation
+    */
+    public function assigned_tasks(){
+        return $this->hasMany(Task::class,'assigned_user_id');
+    }
 }

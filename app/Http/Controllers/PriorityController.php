@@ -18,6 +18,7 @@ class PriorityController extends Controller
     public function get(Request $request, $id)
     {
         $priority = Priority::findOrFail($id);
+
         return response()->json($priority, 200);
     }
 
