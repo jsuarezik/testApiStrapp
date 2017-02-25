@@ -35,56 +35,6 @@ class UserControllerTest extends TestCase
         });
     }
 
-    public function testListCreatedTasksByUser(){
-        //User not found
-        $this->withoutMiddleware();
-        $get = $this->json('GET', '/api/v1/users/1/created_tasks');
-        $this->assertResponseStatus(Response::HTTP_NOT_FOUND, 'Test if Http Not Found');
-        //User found with no tasks
-        $user = factory(User::class)->create();
-        $get = $this->json('GET', '/api/v1/users/'.$user->id.'/created_tasks');
-        $this->assertResponseOk();
-        $response = json_decode($get->response->getContent(), true);
-        $this->assertCount(0, $response, 'Test if query count is 0');
-        //User found with tasks
-        $tasks = factory(Task::class, 2)->create(['creator_id' => $user->id]);
-        $get = $this->json('GET', '/api/v1/users/'.$user->id.'/created_tasks');
-        $this->assertResponseOk();
-        $response = json_decode($get->response->getContent(), true);
-        $this->assertNotNull($response, 'Test if is a valid json');
-        $this->assertTrue(json_last_error() == JSON_ERROR_NONE, 'Test if the response was ok');
-        $this->assertCount(2, $response, 'Test if query count is 2');
-
-        $tasks->each(function ($item, $key) use ($response){
-            $this->assertObjectEqualsExclude($item, $response[$key]);
-        });
-    }
-
-    public function testListAssignedTasksByUser(){
-        //User not found
-        $this->withoutMiddleware();
-        $get = $this->json('GET', '/api/v1/users/1/assigned_tasks');
-        $this->assertResponseStatus(Response::HTTP_NOT_FOUND, 'Test if Http Not Found');
-        //User found with no tasks
-        $user = factory(User::class)->create();
-        $get = $this->json('GET', '/api/v1/users/'.$user->id.'/assigned_tasks');
-        $this->assertResponseOk();
-        $response = json_decode($get->response->getContent(), true);
-        $this->assertCount(0, $response, 'Test if query count is 0');
-        //User found with tasks
-        $tasks = factory(Task::class, 2)->create(['user_assigned_id' => $user->id]);
-        $get = $this->json('GET', '/api/v1/users/'.$user->id.'/assigned_tasks');
-        $this->assertResponseOk();
-        $response = json_decode($get->response->getContent(), true);
-        $this->assertNotNull($response, 'Test if is a valid json');
-        $this->assertTrue(json_last_error() == JSON_ERROR_NONE, 'Test if the response was ok');
-        $this->assertCount(2, $response, 'Test if query count is 2');
-
-        $tasks->each(function ($item, $key) use ($response){
-            $this->assertObjectEqualsExclude($item, $response[$key]);
-        });
-    }
-
     public function testPostUser()
     {
         //Add user without admin role

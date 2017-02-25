@@ -1,104 +1,101 @@
 <?php
 
-use App\Models\User;
-use App\Models\Priority;
+use App\Models\Product;
+
 use Laravel\Lumen\Testing\Concerns\MakesHttpRequests;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Symfony\Component\HttpFoundation\Response;
 
-class PriorityControllerTest extends TestCase
+class ProductControllerTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function testListPriorities()
+    public function testListProducts()
     {
         //Test for an empty list
         $this->withoutMiddleware();
-        $get = $this->json('GET','/api/v1/priorities');
+        $get = $this->json('GET','/api/v1/products');
         $this->assertResponseOk();
         $response = json_decode($get->response->getContent(), true);
         $this->assertNotNull($response, 'Test if is a valid json');
         $this->assertTrue(json_last_error() == JSON_ERROR_NONE, 'Test if the response was ok');
         $this->assertCount(0,$response, 'Test if query count is zero');
         //Test for a non empty list
-        $priorities = factory(Priority::class,2)->create();
-        $get = $this->json('GET', 'api/v1/priorities');
+        $products = factory(Product::class,2)->create();
+        $get = $this->json('GET', 'api/v1/products');
         $this->assertResponseOk();
         $response = json_decode($get->response->getContent(), true);
         $this->assertNotNull($response, 'Test if is a valid json');
         $this->assertTrue(json_last_error() == JSON_ERROR_NONE, 'Test if the response was ok');
         $this->assertCount(2, $response, 'Test if query count is 2');
 
-        $priorities->each(function($item, $key) use ($response){
-            $this->assertObjectEqualsExclude($item, $response[$key]);
-        });
+        $this->assertEquals($products->toArray(), $response);
     }
 
-    public function testPostPriority()
+    public function testPostProduct()
     {
-        //Add Priority
-        $this->be(factory(User::class)->create());
         $this->withoutMiddleware();
-        //Invalid Data
-        $post = $this->json('POST', '/api/v1/priorities', []); //Empty request
-        $this->assertResponseStatus(Response::HTTP_UNPROCESSABLE_ENTITY,'Test if Http Unprocessable Entity');
-        $post = $this->json('POST', '/api/v1/priorities', ['name' => '123']);
+        $post = $this->json('POST', '/api/v1/products', []); //Empty request
+        $this->assertResponseStatus(Response::HTTP_UNPROCESSABLE_ENTITY,'Test if Unprocessable Entity');
+        $post = $this->json('POST', '/api/v1/products', ['name' => '12']); // Minimun Lenght 3
         $this->assertResponseStatus(Response::HTTP_UNPROCESSABLE_ENTITY, 'Test if HTTP Unprocessable Entity');//Invalid name
-        //Valid Data
-        $post = $this->json('POST', '/api/v1/priorities', ['name' => 'foo']);
+        $post = $this->json('POST', '/api/v1/products', ['name' => 'foo', 'price' => 'asd']);
+        $this->assertResponseStatus(Response::HTTP_UNPROCESSABLE_ENTITY, 'Test if HTTP Unprocessable Entity');//Invalid price
+        $post = $this->json('POST', '/api/v1/products', ['name' => 'foo', 'price' => '5', 'in_stock' => true]);
         $this->assertResponseStatus(Response::HTTP_CREATED, 'Test if HTTP Created');//Valid data
-        $this->seeInDatabase('priority',['name' => 'foo']);
+        $this->seeInDatabase('product',['name' => 'foo', 'price' => '5']);
         $response = json_decode($post->response->getContent(),true);
         $this->assertNotNull($response,'Test if is a valid json');
         $this->assertTrue(json_last_error() == JSON_ERROR_NONE,'Test if the response was ok');
-        $priority = Priority::findOrFail(1);
-        $this->assertObjectEqualsExclude($priority, $response);
+        $product = Product::findOrFail(1);
+        $this->assertEquals($product->toArray(), $response);
     }
 
-    public function testGetPriority()
+    public function testGetProduct()
     {
+
         $this->withoutMiddleware();
-        //Priority not found
-        $query = $this->json('GET', '/api/v1/priorities/1');
+        //Product not found
+        $query = $this->json('GET', '/api/v1/products/1');
         $this->assertResponseStatus(Response::HTTP_NOT_FOUND, 'Test if HTTP Not Found');
         //User found
-        $priority = factory(Priority::class)->create();
-        $query = $this->json('GET','/api/v1/priorities/'.$priority->id);
+        $product = factory(Product::class)->create();
+        $query = $this->json('GET','/api/v1/products/'.$product->id);
         $this->assertResponseOk();
         $response = json_decode($query->response->getContent(),true);
         $this->assertNotNull($response,'Test if is a valid json');
         $this->assertTrue(json_last_error() == JSON_ERROR_NONE,'Test if the response was ok');
-        $this->assertObjectEqualsExclude($priority, $response);
+        $this->assertEquals($product->toArray(), $response);
     }
 
-    public function testPatchPriority()
+    public function testPatchProduct()
     {
+
         $this->withoutMiddleware();
-        //Priority not found
-        $this->be(factory(User::class)->create());
-        $patch = $this->json('PATCH', '/api/v1/priority/1',[]);
+        $patch = $this->json('PATCH', '/api/v1/products/1',[]);
         $this->assertResponseStatus(Response::HTTP_NOT_FOUND, 'Test if HTTP Not Found');//Not found
-        //Priority found but invalid data
-        $priority = factory(Priority::class)->create();
-        $patch = $this->json('PATCH', '/api/v1/priorities/'.$priority->id,['name' => '123']);
+        //Product found but invalid data
+        $product = factory(Product::class)->create();
+
+        $patch = $this->json('PATCH', '/api/v1/products/'.$product->id,['name' => '123']);
         $this->assertResponseStatus(Response::HTTP_UNPROCESSABLE_ENTITY,'Test if HTTP Unprocessable Entity'); //Invalid name
-        //Admin user, user found valid data
-        $patch = $this->json('PATCH', '/api/v1/priorities/'.$priority->id,['name' => 'foo']);
+        $patch = $this->json('PATCH', '/api/v1/products/'.$product->id,['name' => 'foo', 'price' => 'foo']);
+        $this->assertResponseStatus(Response::HTTP_UNPROCESSABLE_ENTITY,'Test if HTTP Unprocessable Entity'); //Invalid price
+        $patch = $this->json('PATCH', '/api/v1/products/'.$product->id,['name' => 'foo', 'price' => '5.0']);
         $this->assertResponseStatus(Response::HTTP_NO_CONTENT, 'Test if HTTP No Content');//Valid Data
+        $this->seeInDatabase('product', ['name' => 'foo', 'price' => '5.0']);
     }
 
-    public function testDeletePriority()
+    public function testDeleteProduct()
     {
         $this->withoutMiddleware();
-        //Priority not found
-        $this->be(factory(User::class)->create());
-        $delete = $this->json('DELETE', 'api/v1/priorities/1');
+
+        $delete = $this->json('DELETE', 'api/v1/products/1');
         $this->assertResponseStatus(Response::HTTP_NOT_FOUND, 'Test HTTP Not Found');
-        //Priority found
-        $priority = factory(Priority::class)->create();
-        $delete = $this->json('DELETE', 'api/v1/priorities/'.$priority->id);
+        $product = factory(Product::class)->create();
+        $delete = $this->json('DELETE', 'api/v1/products/'.$product->id);
         $this->assertResponseStatus(Response::HTTP_NO_CONTENT, 'Test HTTP No Content');
-        $this->missingFromDatabase('priority',['id' => $priority->id]);
+        $this->missingFromDatabase('product',['id' => $product->id]);
     }
 
 }

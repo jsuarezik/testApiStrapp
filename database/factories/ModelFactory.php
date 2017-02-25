@@ -1,8 +1,9 @@
 <?php
 
 use App\Models\User;
-use App\Models\Priority;
-use App\Models\Task;
+use App\Models\Product;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -29,19 +30,10 @@ $factory->defineAs(User::class,'admin', function (Faker\Generator $faker) use ($
     return array_merge($user, ['is_admin' => true]);
 });
 
-$factory->define(Priority::class, function (Faker\Generator $faker){
+$factory->define(Product::class, function(Faker\Generator $faker){
     return [
-        'name' => $faker->word
-    ];
-});
-
-$factory->define(Task::class, function (Faker\Generator $faker){
-    return [
-        'title' => $faker->word,
-        'description' => $faker->words(3, true),
-        'due_date' => $faker->date(),
-        'priority_id' => factory(Priority::class)->create()->id,
-        'creator_id' => factory(User::class)->create()->id,
-        'user_assigned_id' => factory(User::class)->create()->id
+        'name' => $faker->word,
+        'price' => $faker->randomFloat(2,0,999),
+        'in_stock' => 1
     ];
 });

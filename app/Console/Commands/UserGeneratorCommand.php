@@ -42,7 +42,7 @@ class UserGeneratorCommand extends Command
         $this->user->email = $this->argument('email');
 
         if (!$this->option('first_name')) {
-            $this->user->name = $this->user->email;
+            $this->user->first_name = $this->user->email;
         } else {
             $this->user->first_name = $this->option('first_name');
             $this->user->last_name = $this->option('last_name');
