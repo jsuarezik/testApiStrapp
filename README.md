@@ -19,5 +19,4 @@
 * All the routes in the API have 'api/v1/' as prefix.
 * Go to the `web\routes.php' file to find all the routes available
 * The Authorization header must be something like this -> `Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL3YxL2F1dGgvbG9naW4iLCJpYXQiOjE0ODgwNDU2NzUsImV4cCI6MTQ4ODA0OTI3NSwibmJmIjoxNDg4MDQ1Njc1LCJqdGkiOiJTTUpXMllOS3FjZWJ6RWx5Iiwic3ViIjo2fQ.6PB5Rk07TWYj7tMSGR3xkRkTxCRndSsZ4V0rCWtOhdg` (Keep in mind that the Bearer keyword it's required.
-* The data which is going to get POSTed have the same format explained in the email of the challenge.
 * It's highly recommended to use the latest version of PHP i.e: 7.0
