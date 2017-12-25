@@ -38,12 +38,29 @@ $app->group([
     $app->post('users','UserController@add');
     $app->patch('users/{id}', 'UserController@patch');
     $app->delete('users/{id}', 'UserController@delete');
-    //Products
-    $app->get('products', 'ProductController@all');
-    $app->get('products/{id}', 'ProductController@get');
-    $app->post('products', 'ProductController@add');
-    $app->patch('products/{id}', 'ProductController@patch');
-    $app->delete('products/{id}', 'ProductController@delete');
-
+    //Traveler
+    $app->get('travelers', 'TravelerController@all');
+    $app->get('travelers/{id}', 'TravelerController@get');
+    $app->get('travelers/{id}/travels', 'TravelerController@getTravels');
+    $app->post('travelers', 'TravelerController@add');
+    $app->patch('travelers/{id}', 'TravelerController@patch');
+    $app->delete('travelers/{id}', 'TravelerController@delete');
+    //Place
+    $app->get('places', 'PlaceController@all');
+    $app->get('places/{id}', 'PlaceController@get');
+    $app->get('places/{id}/origin_travels', 'PlaceController@getOriginTravels');
+    $app->get('places/{id}/destination_travels' , 'PlaceController@getDestinationTravels');
+    $app->post('places', 'PlaceController@add');
+    $app->patch('places/{id}', 'PlaceController@patch');
+    $app->delete('places/{id}', 'PlaceController@delete');
+    //Travels
+    $app->get('travels', 'TravelController@all');
+    $app->get('travels/{id}', 'TravelController@get');
+    $app->get('travels/{id}/origin', 'TravelController@getOriginPlace');
+    $app->get('travels/{id}/destination' , 'TravelController@getDestinationPlace');
+    $app->get('travels/{id}/traveler' , 'TravelController@getTraveler');
+    $app->post('travels', 'TravelController@add');
+    $app->patch('travels/{id}', 'TravelController@patch');
+    $app->delete('travels/{id}', 'TravelController@delete');
 
 });
